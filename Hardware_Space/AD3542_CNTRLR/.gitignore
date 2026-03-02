@@ -1,0 +1,17 @@
+# Ignore Vivado Auto Generated Files 
+*.jou
+*.log
+*.pb
+*.backup
+*.hw/
+*.runs/
+*.sim/
+*.srcs/
+*.webtalk/
+*.xpr
+*.bit
+*.Xil/
+*.bin
+*.cache/
+Project/
+Logs/

@@ -23,3 +23,6 @@ source "../TCL_Scripts/Add_RTL.tcl"
 
 # Execute Constraint TCL File
 source "../TCL_Scripts/Add_Pinout.tcl"
+
+# Execute Block Design TCL File
+source "../TCL_Scripts/BD_Des.tcl"

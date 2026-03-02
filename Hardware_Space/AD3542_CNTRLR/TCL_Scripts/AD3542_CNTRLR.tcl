@@ -18,6 +18,8 @@ if {[file exists $Proj_Dir]} {
 # Regenerate Project 
 create_project $Proj_Nme $Proj_Dir -part $fpga_prt
 
+set_property target_language VHDL [current_project]
+
 # Execute RTL TCL file
 source "../TCL_Scripts/Add_RTL.tcl"
 

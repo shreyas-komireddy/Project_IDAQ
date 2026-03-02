@@ -10,4 +10,4 @@ foreach f $rtl_files {
 update_compile_order -fileset sources_1
 
 # Set Top Module
-set_property top AD3542_CTRLR [current_fileset]
+set_property top AD3542_SYS_wrapper [current_fileset]

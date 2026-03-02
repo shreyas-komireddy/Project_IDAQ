@@ -1,5 +1,5 @@
 #Specify FPGA Part Number
-set fpga_prt "xc7z020clg484-1"
+set fpga_prt "xc7z030ffg676-2"
 
 #Name a Project
 set Proj_Nme "AD3542_PRTYPE"
@@ -17,3 +17,9 @@ if {[file exists $Proj_Dir]} {
 
 # Regenerate Project 
 create_project $Proj_Nme $Proj_Dir -part $fpga_prt
+
+# Execute RTL TCL file
+source "../TCL_Scripts/Add_RTL.tcl"
+
+# Execute Constraint TCL File
+source "../TCL_Scripts/Add_Pinout.tcl"

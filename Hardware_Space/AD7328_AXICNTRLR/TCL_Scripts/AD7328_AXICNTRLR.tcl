@@ -25,7 +25,7 @@ set_property ip_repo_paths "f:/Project_IDAQclone/Project_IDAQ/Hardware_Space/AD7
 update_ip_catalog
 
 # Execute RTL TCL file
-# source "../TCL_Scripts/Add_RTL.tcl"
+source "../TCL_Scripts/Add_RTL.tcl"
 
 # Execute Constraint TCL File
 source "../TCL_Scripts/Add_Pinout.tcl"

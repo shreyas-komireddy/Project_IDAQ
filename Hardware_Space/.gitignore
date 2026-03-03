@@ -13,5 +13,7 @@
 *.Xil/
 *.bin
 *.cache/
+IP_Projects/
 Project/
 Logs/
+temp/

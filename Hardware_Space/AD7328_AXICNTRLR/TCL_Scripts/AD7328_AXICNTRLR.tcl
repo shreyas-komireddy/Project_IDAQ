@@ -2,7 +2,7 @@
 set fpga_prt "xc7z030ffg676-2"
 
 #Name a Project
-set Proj_Nme "AD7328_PRTYPE"
+set Proj_Nme "AD7328_AXIPRTYPE"
 
 #Specify the Project Creation Directory
 set Proj_Dir "../Project"
@@ -20,8 +20,12 @@ create_project $Proj_Nme $Proj_Dir -part $fpga_prt
 
 set_property target_language VHDL [current_project]
 
+# Add IPs Repository
+set_property ip_repo_paths "f:/Project_IDAQclone/Project_IDAQ/Hardware_Space/AD7328_AXICNTRLR/IPs_Repo" [current_project]
+update_ip_catalog
+
 # Execute RTL TCL file
-source "../TCL_Scripts/Add_RTL.tcl"
+# source "../TCL_Scripts/Add_RTL.tcl"
 
 # Execute Constraint TCL File
 source "../TCL_Scripts/Add_Pinout.tcl"

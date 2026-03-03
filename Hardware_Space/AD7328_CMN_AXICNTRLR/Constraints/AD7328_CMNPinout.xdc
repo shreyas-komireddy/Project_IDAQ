@@ -1,0 +1,38 @@
+set_property PACKAGE_PIN AA20 [get_ports {ad7328_cs_0[0]}]
+set_property PACKAGE_PIN AD24 [get_ports {ad7328_cs_0[1]}]
+set_property IOSTANDARD LVCMOS33 [get_ports {ad7328_cs_0[1]}]
+set_property IOSTANDARD LVCMOS33 [get_ports {ad7328_cs_0[0]}]
+
+set_property PACKAGE_PIN AA19 [get_ports {ad7328_sclk_0[0]}]
+set_property PACKAGE_PIN AA23 [get_ports {ad7328_sclk_0[1]}]
+set_property IOSTANDARD LVCMOS33 [get_ports {ad7328_sclk_0[1]}]
+set_property IOSTANDARD LVCMOS33 [get_ports {ad7328_sclk_0[0]}]
+
+set_property PACKAGE_PIN AB21 [get_ports {ad7328_sdi_0[0]}]
+set_property PACKAGE_PIN AC24 [get_ports {ad7328_sdi_0[1]}]
+set_property IOSTANDARD LVCMOS33 [get_ports {ad7328_sdi_0[1]}]
+set_property IOSTANDARD LVCMOS33 [get_ports {ad7328_sdi_0[0]}]
+
+
+
+set_property PACKAGE_PIN W18 [get_ports {ad7328_sdo_0[0]}]
+set_property PACKAGE_PIN AC23 [get_ports {ad7328_sdo_0[1]}]
+set_property IOSTANDARD LVCMOS33 [get_ports {ad7328_sdo_0[1]}]
+set_property IOSTANDARD LVCMOS33 [get_ports {ad7328_sdo_0[0]}]
+
+set_property PACKAGE_PIN B17 [get_ports {led_out_0[0]}]
+set_property PACKAGE_PIN B16 [get_ports {led_out_0[1]}]
+set_property PACKAGE_PIN A15 [get_ports {led_out_0[2]}]
+set_property PACKAGE_PIN C14 [get_ports {led_out_0[3]}]
+set_property PACKAGE_PIN A13 [get_ports {led_out_0[4]}]
+set_property PACKAGE_PIN D13 [get_ports {led_out_0[5]}]
+set_property PACKAGE_PIN C12 [get_ports {led_out_0[6]}]
+set_property PACKAGE_PIN C11 [get_ports {led_out_0[7]}]
+set_property IOSTANDARD LVCMOS18 [get_ports {led_out_0[7]}]
+set_property IOSTANDARD LVCMOS18 [get_ports {led_out_0[6]}]
+set_property IOSTANDARD LVCMOS18 [get_ports {led_out_0[5]}]
+set_property IOSTANDARD LVCMOS18 [get_ports {led_out_0[4]}]
+set_property IOSTANDARD LVCMOS18 [get_ports {led_out_0[3]}]
+set_property IOSTANDARD LVCMOS18 [get_ports {led_out_0[2]}]
+set_property IOSTANDARD LVCMOS18 [get_ports {led_out_0[1]}]
+set_property IOSTANDARD LVCMOS18 [get_ports {led_out_0[0]}]

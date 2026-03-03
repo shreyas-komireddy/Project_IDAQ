@@ -9,7 +9,6 @@
 *.srcs/
 *.webtalk/
 *.xpr
-*.bit
 *.Xil/
 *.bin
 *.cache/

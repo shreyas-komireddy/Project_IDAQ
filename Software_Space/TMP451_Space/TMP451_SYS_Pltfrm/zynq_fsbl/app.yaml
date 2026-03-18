@@ -1,0 +1,4 @@
+domain_path: F:\Project_IDAQclone\Project_IDAQ\Software_Space\TMP451_Space\TMP451_SYS_Pltfrm\zynq_fsbl\zynq_fsbl_bsp
+app_src_dir: F:\Xilinx_2024_2\Vitis\2024.2\data\embeddedsw\lib\sw_apps\zynq_fsbl
+template: zynq_fsbl
+lang: c

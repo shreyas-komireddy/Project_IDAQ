@@ -20,7 +20,7 @@ set script_folder [_tcl::get_script_folder]
 ################################################################
 # Check if script is running in correct Vivado version.
 ################################################################
-set scripts_vivado_version 2023.2
+set scripts_vivado_version 2024.2
 set current_vivado_version [version -short]
 
 if { [string first $scripts_vivado_version $current_vivado_version] == -1 } {
@@ -275,14 +275,30 @@ proc create_root_design { parentCell } {
   connect_bd_intf_net -intf_net processing_system7_0_UART_0 [get_bd_intf_ports UART_0_0] [get_bd_intf_pins processing_system7_0/UART_0]
 
   # Create port connections
-  connect_bd_net -net AD7328_IP_0_ad7328_cs [get_bd_pins AD7328_IP_0/ad7328_cs] [get_bd_ports ad7328_cs_0]
-  connect_bd_net -net AD7328_IP_0_ad7328_sclk [get_bd_pins AD7328_IP_0/ad7328_sclk] [get_bd_ports ad7328_sclk_0]
-  connect_bd_net -net AD7328_IP_0_ad7328_sdi [get_bd_pins AD7328_IP_0/ad7328_sdi] [get_bd_ports ad7328_sdi_0]
-  connect_bd_net -net AD7328_IP_0_led_out [get_bd_pins AD7328_IP_0/led_out] [get_bd_ports led_out_0]
-  connect_bd_net -net ad7328_sdo_0_1 [get_bd_ports ad7328_sdo_0] [get_bd_pins AD7328_IP_0/ad7328_sdo]
-  connect_bd_net -net processing_system7_0_FCLK_CLK0 [get_bd_pins processing_system7_0/FCLK_CLK0] [get_bd_pins processing_system7_0/M_AXI_GP0_ACLK] [get_bd_pins axi_interconnect_0/ACLK] [get_bd_pins rst_ps7_0_125M/slowest_sync_clk] [get_bd_pins axi_interconnect_0/S00_ACLK] [get_bd_pins axi_interconnect_0/M00_ACLK] [get_bd_pins AD7328_IP_0/s00_axi_aclk]
-  connect_bd_net -net processing_system7_0_FCLK_RESET0_N [get_bd_pins processing_system7_0/FCLK_RESET0_N] [get_bd_pins rst_ps7_0_125M/ext_reset_in]
-  connect_bd_net -net rst_ps7_0_125M_peripheral_aresetn [get_bd_pins rst_ps7_0_125M/peripheral_aresetn] [get_bd_pins axi_interconnect_0/ARESETN] [get_bd_pins axi_interconnect_0/S00_ARESETN] [get_bd_pins axi_interconnect_0/M00_ARESETN] [get_bd_pins AD7328_IP_0/s00_axi_aresetn]
+  connect_bd_net -net AD7328_IP_0_ad7328_cs  [get_bd_pins AD7328_IP_0/ad7328_cs] \
+  [get_bd_ports ad7328_cs_0]
+  connect_bd_net -net AD7328_IP_0_ad7328_sclk  [get_bd_pins AD7328_IP_0/ad7328_sclk] \
+  [get_bd_ports ad7328_sclk_0]
+  connect_bd_net -net AD7328_IP_0_ad7328_sdi  [get_bd_pins AD7328_IP_0/ad7328_sdi] \
+  [get_bd_ports ad7328_sdi_0]
+  connect_bd_net -net AD7328_IP_0_led_out  [get_bd_pins AD7328_IP_0/led_out] \
+  [get_bd_ports led_out_0]
+  connect_bd_net -net ad7328_sdo_0_1  [get_bd_ports ad7328_sdo_0] \
+  [get_bd_pins AD7328_IP_0/ad7328_sdo]
+  connect_bd_net -net processing_system7_0_FCLK_CLK0  [get_bd_pins processing_system7_0/FCLK_CLK0] \
+  [get_bd_pins processing_system7_0/M_AXI_GP0_ACLK] \
+  [get_bd_pins axi_interconnect_0/ACLK] \
+  [get_bd_pins rst_ps7_0_125M/slowest_sync_clk] \
+  [get_bd_pins axi_interconnect_0/S00_ACLK] \
+  [get_bd_pins axi_interconnect_0/M00_ACLK] \
+  [get_bd_pins AD7328_IP_0/s00_axi_aclk]
+  connect_bd_net -net processing_system7_0_FCLK_RESET0_N  [get_bd_pins processing_system7_0/FCLK_RESET0_N] \
+  [get_bd_pins rst_ps7_0_125M/ext_reset_in]
+  connect_bd_net -net rst_ps7_0_125M_peripheral_aresetn  [get_bd_pins rst_ps7_0_125M/peripheral_aresetn] \
+  [get_bd_pins axi_interconnect_0/ARESETN] \
+  [get_bd_pins axi_interconnect_0/S00_ARESETN] \
+  [get_bd_pins axi_interconnect_0/M00_ARESETN] \
+  [get_bd_pins AD7328_IP_0/s00_axi_aresetn]
 
   # Create address segments
   assign_bd_address -offset 0x43C00000 -range 0x00010000 -target_address_space [get_bd_addr_spaces processing_system7_0/Data] [get_bd_addr_segs AD7328_IP_0/S00_AXI/S00_AXI_reg] -force

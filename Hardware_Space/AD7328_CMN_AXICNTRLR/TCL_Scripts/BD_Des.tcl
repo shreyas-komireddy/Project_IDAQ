@@ -20,7 +20,7 @@ set script_folder [_tcl::get_script_folder]
 ################################################################
 # Check if script is running in correct Vivado version.
 ################################################################
-set scripts_vivado_version 2023.2
+set scripts_vivado_version 2024.2
 set current_vivado_version [version -short]
 
 if { [string first $scripts_vivado_version $current_vivado_version] == -1 } {
@@ -279,14 +279,30 @@ proc create_root_design { parentCell } {
   connect_bd_intf_net -intf_net processing_system7_0_M_AXI_GP0 [get_bd_intf_pins processing_system7_0/M_AXI_GP0] [get_bd_intf_pins axi_interconnect_0/S00_AXI]
 
   # Create port connections
-  connect_bd_net -net AD7328_CMNAXI_0_ad7328_cs [get_bd_pins AD7328_CMNAXI_0/ad7328_cs] [get_bd_ports ad7328_cs_0]
-  connect_bd_net -net AD7328_CMNAXI_0_ad7328_sclk [get_bd_pins AD7328_CMNAXI_0/ad7328_sclk] [get_bd_ports ad7328_sclk_0]
-  connect_bd_net -net AD7328_CMNAXI_0_ad7328_sdi [get_bd_pins AD7328_CMNAXI_0/ad7328_sdi] [get_bd_ports ad7328_sdi_0]
-  connect_bd_net -net AD7328_CMNAXI_0_led_out [get_bd_pins AD7328_CMNAXI_0/led_out] [get_bd_ports led_out_0]
-  connect_bd_net -net ad7328_sdo_0_1 [get_bd_ports ad7328_sdo_0] [get_bd_pins AD7328_CMNAXI_0/ad7328_sdo]
-  connect_bd_net -net processing_system7_0_FCLK_CLK0 [get_bd_pins processing_system7_0/FCLK_CLK0] [get_bd_pins processing_system7_0/M_AXI_GP0_ACLK] [get_bd_pins axi_interconnect_0/ACLK] [get_bd_pins rst_ps7_0_125M/slowest_sync_clk] [get_bd_pins axi_interconnect_0/S00_ACLK] [get_bd_pins AD7328_CMNAXI_0/s00_axi_aclk] [get_bd_pins axi_interconnect_0/M00_ACLK]
-  connect_bd_net -net processing_system7_0_FCLK_RESET0_N [get_bd_pins processing_system7_0/FCLK_RESET0_N] [get_bd_pins rst_ps7_0_125M/ext_reset_in]
-  connect_bd_net -net rst_ps7_0_125M_peripheral_aresetn [get_bd_pins rst_ps7_0_125M/peripheral_aresetn] [get_bd_pins axi_interconnect_0/ARESETN] [get_bd_pins axi_interconnect_0/S00_ARESETN] [get_bd_pins AD7328_CMNAXI_0/s00_axi_aresetn] [get_bd_pins axi_interconnect_0/M00_ARESETN]
+  connect_bd_net -net AD7328_CMNAXI_0_ad7328_cs  [get_bd_pins AD7328_CMNAXI_0/ad7328_cs] \
+  [get_bd_ports ad7328_cs_0]
+  connect_bd_net -net AD7328_CMNAXI_0_ad7328_sclk  [get_bd_pins AD7328_CMNAXI_0/ad7328_sclk] \
+  [get_bd_ports ad7328_sclk_0]
+  connect_bd_net -net AD7328_CMNAXI_0_ad7328_sdi  [get_bd_pins AD7328_CMNAXI_0/ad7328_sdi] \
+  [get_bd_ports ad7328_sdi_0]
+  connect_bd_net -net AD7328_CMNAXI_0_led_out  [get_bd_pins AD7328_CMNAXI_0/led_out] \
+  [get_bd_ports led_out_0]
+  connect_bd_net -net ad7328_sdo_0_1  [get_bd_ports ad7328_sdo_0] \
+  [get_bd_pins AD7328_CMNAXI_0/ad7328_sdo]
+  connect_bd_net -net processing_system7_0_FCLK_CLK0  [get_bd_pins processing_system7_0/FCLK_CLK0] \
+  [get_bd_pins processing_system7_0/M_AXI_GP0_ACLK] \
+  [get_bd_pins axi_interconnect_0/ACLK] \
+  [get_bd_pins rst_ps7_0_125M/slowest_sync_clk] \
+  [get_bd_pins axi_interconnect_0/S00_ACLK] \
+  [get_bd_pins AD7328_CMNAXI_0/s00_axi_aclk] \
+  [get_bd_pins axi_interconnect_0/M00_ACLK]
+  connect_bd_net -net processing_system7_0_FCLK_RESET0_N  [get_bd_pins processing_system7_0/FCLK_RESET0_N] \
+  [get_bd_pins rst_ps7_0_125M/ext_reset_in]
+  connect_bd_net -net rst_ps7_0_125M_peripheral_aresetn  [get_bd_pins rst_ps7_0_125M/peripheral_aresetn] \
+  [get_bd_pins axi_interconnect_0/ARESETN] \
+  [get_bd_pins axi_interconnect_0/S00_ARESETN] \
+  [get_bd_pins AD7328_CMNAXI_0/s00_axi_aresetn] \
+  [get_bd_pins axi_interconnect_0/M00_ARESETN]
 
   # Create address segments
   assign_bd_address -offset 0x43C00000 -range 0x00010000 -target_address_space [get_bd_addr_spaces processing_system7_0/Data] [get_bd_addr_segs AD7328_CMNAXI_0/S00_AXI/S00_AXI_reg] -force
@@ -295,6 +311,7 @@ proc create_root_design { parentCell } {
   # Restore current instance
   current_bd_instance $oldCurInst
 
+  validate_bd_design
   save_bd_design
 }
 # End of create_root_design()
@@ -306,6 +323,4 @@ proc create_root_design { parentCell } {
 
 create_root_design ""
 
-
-common::send_gid_msg -ssname BD::TCL -id 2053 -severity "WARNING" "This Tcl script was generated from a block design that has not been validated. It is possible that design <$design_name> may result in errors during validation."
 

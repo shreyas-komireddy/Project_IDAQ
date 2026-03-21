@@ -20,7 +20,7 @@ set script_folder [_tcl::get_script_folder]
 ################################################################
 # Check if script is running in correct Vivado version.
 ################################################################
-set scripts_vivado_version 2023.2
+set scripts_vivado_version 2024.2
 set current_vivado_version [version -short]
 
 if { [string first $scripts_vivado_version $current_vivado_version] == -1 } {
@@ -332,28 +332,63 @@ proc create_root_design { parentCell } {
   connect_bd_intf_net -intf_net processing_system7_0_UART_0 [get_bd_intf_ports UART_0_0] [get_bd_intf_pins processing_system7_0/UART_0]
 
   # Create port connections
-  connect_bd_net -net Intr_Pltfrm_0_ad3542_cs [get_bd_pins Intr_Pltfrm_0/ad3542_cs] [get_bd_ports ad3542_cs_0]
-  connect_bd_net -net Intr_Pltfrm_0_ad3542_ldac [get_bd_pins Intr_Pltfrm_0/ad3542_ldac] [get_bd_ports ad3542_ldac_0]
-  connect_bd_net -net Intr_Pltfrm_0_ad3542_rst [get_bd_pins Intr_Pltfrm_0/ad3542_rst] [get_bd_ports ad3542_rst_0]
-  connect_bd_net -net Intr_Pltfrm_0_ad3542_sclk [get_bd_pins Intr_Pltfrm_0/ad3542_sclk] [get_bd_ports ad3542_sclk_0]
-  connect_bd_net -net Intr_Pltfrm_0_ad3542_sdi [get_bd_pins Intr_Pltfrm_0/ad3542_sdi] [get_bd_ports ad3542_sdi_0]
-  connect_bd_net -net Intr_Pltfrm_0_ad7328_cs [get_bd_pins Intr_Pltfrm_0/ad7328_cs] [get_bd_ports ad7328_cs_0]
-  connect_bd_net -net Intr_Pltfrm_0_ad7328_sclk [get_bd_pins Intr_Pltfrm_0/ad7328_sclk] [get_bd_ports ad7328_sclk_0]
-  connect_bd_net -net Intr_Pltfrm_0_ad7328_sdi [get_bd_pins Intr_Pltfrm_0/ad7328_sdi] [get_bd_ports ad7328_sdi_0]
-  connect_bd_net -net Intr_Pltfrm_0_digi_out [get_bd_pins Intr_Pltfrm_0/digi_out] [get_bd_ports digi_out_0]
-  connect_bd_net -net Intr_Pltfrm_0_led_out [get_bd_pins Intr_Pltfrm_0/led_out] [get_bd_pins LED_SW_0/intr_pltf]
-  connect_bd_net -net LED_SW_0_led_out [get_bd_pins LED_SW_0/led_out] [get_bd_ports led_out_0]
-  connect_bd_net -net RTCC_0_cs [get_bd_pins RTCC_0/cs] [get_bd_ports cs_0] [get_bd_pins LED_SW_0/rtcc_in]
-  connect_bd_net -net RTCC_0_mosi [get_bd_pins RTCC_0/mosi] [get_bd_ports mosi_0]
-  connect_bd_net -net RTCC_0_sclk [get_bd_pins RTCC_0/sclk] [get_bd_ports sclk_0]
-  connect_bd_net -net ad3542_sdo_0_1 [get_bd_ports ad3542_sdo_0] [get_bd_pins Intr_Pltfrm_0/ad3542_sdo]
-  connect_bd_net -net ad7328_sdo_0_1 [get_bd_ports ad7328_sdo_0] [get_bd_pins Intr_Pltfrm_0/ad7328_sdo]
-  connect_bd_net -net digi_in_0_1 [get_bd_ports digi_in_0] [get_bd_pins Intr_Pltfrm_0/digi_in]
-  connect_bd_net -net miso_0_1 [get_bd_ports miso_0] [get_bd_pins RTCC_0/miso]
-  connect_bd_net -net processing_system7_0_FCLK_CLK0 [get_bd_pins processing_system7_0/FCLK_CLK0] [get_bd_pins processing_system7_0/M_AXI_GP0_ACLK] [get_bd_pins axi_interconnect_0/ACLK] [get_bd_pins rst_ps7_0_125M/slowest_sync_clk] [get_bd_pins axi_interconnect_0/S00_ACLK] [get_bd_pins Intr_Pltfrm_0/s00_axi_aclk] [get_bd_pins axi_interconnect_0/M00_ACLK] [get_bd_pins axi_interconnect_0/M01_ACLK] [get_bd_pins RTCC_0/s00_axi_aclk]
-  connect_bd_net -net processing_system7_0_FCLK_RESET0_N [get_bd_pins processing_system7_0/FCLK_RESET0_N] [get_bd_pins rst_ps7_0_125M/ext_reset_in]
-  connect_bd_net -net rst_ps7_0_125M_peripheral_aresetn [get_bd_pins rst_ps7_0_125M/peripheral_aresetn] [get_bd_pins axi_interconnect_0/ARESETN] [get_bd_pins axi_interconnect_0/S00_ARESETN] [get_bd_pins Intr_Pltfrm_0/s00_axi_aresetn] [get_bd_pins axi_interconnect_0/M00_ARESETN] [get_bd_pins axi_interconnect_0/M01_ARESETN] [get_bd_pins RTCC_0/s00_axi_aresetn]
-  connect_bd_net -net sw_in_0_1 [get_bd_ports sw_in_0] [get_bd_pins LED_SW_0/sw_in]
+  connect_bd_net -net Intr_Pltfrm_0_ad3542_cs  [get_bd_pins Intr_Pltfrm_0/ad3542_cs] \
+  [get_bd_ports ad3542_cs_0]
+  connect_bd_net -net Intr_Pltfrm_0_ad3542_ldac  [get_bd_pins Intr_Pltfrm_0/ad3542_ldac] \
+  [get_bd_ports ad3542_ldac_0]
+  connect_bd_net -net Intr_Pltfrm_0_ad3542_rst  [get_bd_pins Intr_Pltfrm_0/ad3542_rst] \
+  [get_bd_ports ad3542_rst_0]
+  connect_bd_net -net Intr_Pltfrm_0_ad3542_sclk  [get_bd_pins Intr_Pltfrm_0/ad3542_sclk] \
+  [get_bd_ports ad3542_sclk_0]
+  connect_bd_net -net Intr_Pltfrm_0_ad3542_sdi  [get_bd_pins Intr_Pltfrm_0/ad3542_sdi] \
+  [get_bd_ports ad3542_sdi_0]
+  connect_bd_net -net Intr_Pltfrm_0_ad7328_cs  [get_bd_pins Intr_Pltfrm_0/ad7328_cs] \
+  [get_bd_ports ad7328_cs_0]
+  connect_bd_net -net Intr_Pltfrm_0_ad7328_sclk  [get_bd_pins Intr_Pltfrm_0/ad7328_sclk] \
+  [get_bd_ports ad7328_sclk_0]
+  connect_bd_net -net Intr_Pltfrm_0_ad7328_sdi  [get_bd_pins Intr_Pltfrm_0/ad7328_sdi] \
+  [get_bd_ports ad7328_sdi_0]
+  connect_bd_net -net Intr_Pltfrm_0_digi_out  [get_bd_pins Intr_Pltfrm_0/digi_out] \
+  [get_bd_ports digi_out_0]
+  connect_bd_net -net Intr_Pltfrm_0_led_out  [get_bd_pins Intr_Pltfrm_0/led_out] \
+  [get_bd_pins LED_SW_0/intr_pltf]
+  connect_bd_net -net LED_SW_0_led_out  [get_bd_pins LED_SW_0/led_out] \
+  [get_bd_ports led_out_0]
+  connect_bd_net -net RTCC_0_cs  [get_bd_pins RTCC_0/cs] \
+  [get_bd_ports cs_0] \
+  [get_bd_pins LED_SW_0/rtcc_in]
+  connect_bd_net -net RTCC_0_mosi  [get_bd_pins RTCC_0/mosi] \
+  [get_bd_ports mosi_0]
+  connect_bd_net -net RTCC_0_sclk  [get_bd_pins RTCC_0/sclk] \
+  [get_bd_ports sclk_0]
+  connect_bd_net -net ad3542_sdo_0_1  [get_bd_ports ad3542_sdo_0] \
+  [get_bd_pins Intr_Pltfrm_0/ad3542_sdo]
+  connect_bd_net -net ad7328_sdo_0_1  [get_bd_ports ad7328_sdo_0] \
+  [get_bd_pins Intr_Pltfrm_0/ad7328_sdo]
+  connect_bd_net -net digi_in_0_1  [get_bd_ports digi_in_0] \
+  [get_bd_pins Intr_Pltfrm_0/digi_in]
+  connect_bd_net -net miso_0_1  [get_bd_ports miso_0] \
+  [get_bd_pins RTCC_0/miso]
+  connect_bd_net -net processing_system7_0_FCLK_CLK0  [get_bd_pins processing_system7_0/FCLK_CLK0] \
+  [get_bd_pins processing_system7_0/M_AXI_GP0_ACLK] \
+  [get_bd_pins axi_interconnect_0/ACLK] \
+  [get_bd_pins rst_ps7_0_125M/slowest_sync_clk] \
+  [get_bd_pins axi_interconnect_0/S00_ACLK] \
+  [get_bd_pins Intr_Pltfrm_0/s00_axi_aclk] \
+  [get_bd_pins axi_interconnect_0/M00_ACLK] \
+  [get_bd_pins axi_interconnect_0/M01_ACLK] \
+  [get_bd_pins RTCC_0/s00_axi_aclk]
+  connect_bd_net -net processing_system7_0_FCLK_RESET0_N  [get_bd_pins processing_system7_0/FCLK_RESET0_N] \
+  [get_bd_pins rst_ps7_0_125M/ext_reset_in]
+  connect_bd_net -net rst_ps7_0_125M_peripheral_aresetn  [get_bd_pins rst_ps7_0_125M/peripheral_aresetn] \
+  [get_bd_pins axi_interconnect_0/ARESETN] \
+  [get_bd_pins axi_interconnect_0/S00_ARESETN] \
+  [get_bd_pins Intr_Pltfrm_0/s00_axi_aresetn] \
+  [get_bd_pins axi_interconnect_0/M00_ARESETN] \
+  [get_bd_pins axi_interconnect_0/M01_ARESETN] \
+  [get_bd_pins RTCC_0/s00_axi_aresetn]
+  connect_bd_net -net sw_in_0_1  [get_bd_ports sw_in_0] \
+  [get_bd_pins LED_SW_0/sw_in]
 
   # Create address segments
   assign_bd_address -offset 0x43C00000 -range 0x00010000 -target_address_space [get_bd_addr_spaces processing_system7_0/Data] [get_bd_addr_segs Intr_Pltfrm_0/S00_AXI/S00_AXI_reg] -force

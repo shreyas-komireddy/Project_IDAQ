@@ -20,7 +20,7 @@ set script_folder [_tcl::get_script_folder]
 ################################################################
 # Check if script is running in correct Vivado version.
 ################################################################
-set scripts_vivado_version 2023.2
+set scripts_vivado_version 2024.2
 set current_vivado_version [version -short]
 
 if { [string first $scripts_vivado_version $current_vivado_version] == -1 } {
@@ -276,17 +276,28 @@ proc create_root_design { parentCell } {
   connect_bd_intf_net -intf_net CLK_IN1_D_0_1 [get_bd_intf_ports CLK_IN1_D_0] [get_bd_intf_pins clk_wiz_0/CLK_IN1_D]
 
   # Create port connections
-  connect_bd_net -net AD7384_CTRLR_0_ad7384_cs [get_bd_pins AD7384_CTRLR_0/ad7384_cs] [get_bd_ports ad7384_cs_0]
-  connect_bd_net -net AD7384_CTRLR_0_ad7384_sclk [get_bd_pins AD7384_CTRLR_0/ad7384_sclk] [get_bd_ports ad7384_sclk_0]
-  connect_bd_net -net AD7384_CTRLR_0_ad7384_sdi [get_bd_pins AD7384_CTRLR_0/ad7384_sdi] [get_bd_ports ad7384_sdi_0]
-  connect_bd_net -net AD7384_CTRLR_0_led_out [get_bd_pins AD7384_CTRLR_0/led_out] [get_bd_ports led_out_0]
-  connect_bd_net -net ad7384_sdo_a_0_1 [get_bd_ports ad7384_sdo_a_0] [get_bd_pins AD7384_CTRLR_0/ad7384_sdo_a]
-  connect_bd_net -net ad7384_sdo_b_0_1 [get_bd_ports ad7384_sdo_b_0] [get_bd_pins AD7384_CTRLR_0/ad7384_sdo_b]
-  connect_bd_net -net ad7384_sdo_c_0_1 [get_bd_ports ad7384_sdo_c_0] [get_bd_pins AD7384_CTRLR_0/ad7384_sdo_c]
-  connect_bd_net -net ad7384_sdo_d_0_1 [get_bd_ports ad7384_sdo_d_0] [get_bd_pins AD7384_CTRLR_0/ad7384_sdo_d]
-  connect_bd_net -net clk_wiz_0_clk_out1 [get_bd_pins clk_wiz_0/clk_out1] [get_bd_pins AD7384_CTRLR_0/clk_in]
-  connect_bd_net -net ctrlr_reg_0_1 [get_bd_ports ctrlr_reg_0] [get_bd_pins AD7384_CTRLR_0/ctrlr_reg]
-  connect_bd_net -net sys_rst_0_1 [get_bd_ports sys_rst_0] [get_bd_pins AD7384_CTRLR_0/sys_rst]
+  connect_bd_net -net AD7384_CTRLR_0_ad7384_cs  [get_bd_pins AD7384_CTRLR_0/ad7384_cs] \
+  [get_bd_ports ad7384_cs_0]
+  connect_bd_net -net AD7384_CTRLR_0_ad7384_sclk  [get_bd_pins AD7384_CTRLR_0/ad7384_sclk] \
+  [get_bd_ports ad7384_sclk_0]
+  connect_bd_net -net AD7384_CTRLR_0_ad7384_sdi  [get_bd_pins AD7384_CTRLR_0/ad7384_sdi] \
+  [get_bd_ports ad7384_sdi_0]
+  connect_bd_net -net AD7384_CTRLR_0_led_out  [get_bd_pins AD7384_CTRLR_0/led_out] \
+  [get_bd_ports led_out_0]
+  connect_bd_net -net ad7384_sdo_a_0_1  [get_bd_ports ad7384_sdo_a_0] \
+  [get_bd_pins AD7384_CTRLR_0/ad7384_sdo_a]
+  connect_bd_net -net ad7384_sdo_b_0_1  [get_bd_ports ad7384_sdo_b_0] \
+  [get_bd_pins AD7384_CTRLR_0/ad7384_sdo_b]
+  connect_bd_net -net ad7384_sdo_c_0_1  [get_bd_ports ad7384_sdo_c_0] \
+  [get_bd_pins AD7384_CTRLR_0/ad7384_sdo_c]
+  connect_bd_net -net ad7384_sdo_d_0_1  [get_bd_ports ad7384_sdo_d_0] \
+  [get_bd_pins AD7384_CTRLR_0/ad7384_sdo_d]
+  connect_bd_net -net clk_wiz_0_clk_out1  [get_bd_pins clk_wiz_0/clk_out1] \
+  [get_bd_pins AD7384_CTRLR_0/clk_in]
+  connect_bd_net -net ctrlr_reg_0_1  [get_bd_ports ctrlr_reg_0] \
+  [get_bd_pins AD7384_CTRLR_0/ctrlr_reg]
+  connect_bd_net -net sys_rst_0_1  [get_bd_ports sys_rst_0] \
+  [get_bd_pins AD7384_CTRLR_0/sys_rst]
 
   # Create address segments
 

@@ -1,17 +1,66 @@
-# Ignore build output directory
-/build
+# ============================================================
+# Vitis 2024.x Unified IDE - Workspace .gitignore
+# ============================================================
+
+# ---- Entire Platform (fully regenerated from .xsa) ----
+AD7328_Multi_Pltfrm/export/
+AD7328_Multi/hw/sdt/
+AD7328_Multi/ps7_cortexa9_0/
+AD7328_Multi/resources/
+AD7328_Multi/zynq_fsbl/
+AD7328_Multi/vitis-comp.json
+
+# ---- Platform metadata that has absolute paths ----
+AD7328_Multi_Pltfrm/.analytics/
+AD7328_Multi_Pltfrm/*.log
+
+# ---- Hello_World build outputs ----
+AD7328_Multi_DRVR/build/
+AD7328_Multi_DRVR/_ide/
+AD7328_Multi_DRVR/compile_commands.json
+AD7328_Multi_DRVR/vitis-comp.json
+AD7328_Multi_DRVR/src/.cache/
 
 
-# Ignore object files and dependent files
-.o
-.d
+# ---- IDE compile index (machine specific) ----
+**/src/.compile_commands/
 
-#Ignore logs folder and log files
-/logs
-.log
+# ---- Inside src/ - generated files ----
+**/src/.clangd
+**/src/app.yaml
+**/src/compile_commands.json
+**/src/*Example.cmake
+**/src/UserConfig.cmake
+**/src/platform.c
+**/src/.compile_commands/
+**/src/lscript.ld
+**/srcCMakeLists.txt
 
-#Ignore lock files
-.lock
 
-.bin
-.pdi
+# ---- Workspace level garbage ----
+_ide/
+.rigel_lopper/
+.analytics/
+.vscode/
+
+# ---- Vitis workspace state ----
+.vitisWorkspace.json
+*.peers.ini
+.repo.yaml
+.theia/
+*.lock
+*.log
+*.jou
+*.str
+
+# ---- Binary outputs ----
+*.elf
+*.bit
+*.bin
+*.pdi
+*.ltx
+*.xclbin
+
+# ---- OS junk ----
+.DS_Store
+Thumbs.db

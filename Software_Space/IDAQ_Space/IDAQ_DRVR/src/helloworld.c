@@ -1,46 +1,41 @@
-/******************************************************************************
-* Copyright (C) 2023 Advanced Micro Devices, Inc. All Rights Reserved.
-* SPDX-License-Identifier: MIT
-******************************************************************************/
-/*
- * helloworld.c: simple test application
- *
- * This application configures UART 16550 to baud rate 9600.
- * PS7 UART (Zynq) is not initialized by this application, since
- * bootrom/bsp configures it to baud rate 115200
- *
- * ------------------------------------------------
- * | UART TYPE   BAUD RATE                        |
- * ------------------------------------------------
- *   uartns550   9600
- *   uartlite    Configurable only in HW design
- *   ps7_uart    115200 (configured by bootrom/bsp)
- */
-
+// Standard Defined Libraries
 #include <stdio.h>
 #include <xil_types.h>
 #include "platform.h"
 #include "xil_printf.h"
 #include "xparameters.h"
 #include "xuartps.h"
+#include "xiicps.h"
 #include <stdlib.h>
 #include "sleep.h"
 
+// Fallback definition: if UART device ID is not defined (e.g., missing xparameters.h)
 #ifndef XPAR_XUARTPS_0_DEVICE_ID
 #define XPAR_XUARTPS_0_DEVICE_ID 0
 #endif
 
+// UART Macro Defination
 #define UART_DEVICE_ID XPAR_XUARTPS_0_DEVICE_ID
+#define UART_BUFFER 50                              // UART Buffer Size 
 #define ADC_BUFFER 200                              // Circular Buffer for ADC samples averaging
-#define UART_BUFFER 50                               // UART Buffer Size 
+u8 recv_buffer[UART_BUFFER];
+
+// I2C Macro Defination
+#define I2C_DEVICE_ID   XPAR_XIICPS_0_BASEADDR
+#define TMP451_ADDR     0x4C                        // TMP451 SLAVE ADDRESS
+
+// I2C Global variables declarations
+u8 WriteBuffer[1];
+u8 ReadBuffer[1];
+int local_high = 0;
+int local_low = 0;
 
 //IP address Pointer Variable Declaration
 u32 *ip_read_addr;
 u32 *ip_read_rtcc;
 
-u8 recv_buffer[UART_BUFFER];
+// Variable used to call respective fuctions
 int Slave_Addr;
-u16 digi_in;
 
 // Global Variables related to RTCC
 u8 sec_l_val, sec_u_val, min_l_val, min_u_val,hr_l_val, hr_u_val,w_l_val,w_u_val,d_l_val,d_u_val,m_l_val, m_u_val,y_l_val, y_u_val;
@@ -48,34 +43,49 @@ const char* week ;
 
 int main()
 {   
+    
     u32 rtc_val;   
     
     const char* weekday_names[7] = { "Sunday", "Monday", "Tuesday", "Wednesday", "Thursday", "Friday", "Saturday" };
 
     init_platform();
-    
+
     ip_read_addr = (u32*)XPAR_INTR_PLTFRM_0_BASEADDR;
     ip_read_rtcc = (u32*)XPAR_RTCC_0_BASEADDR;
 
-    //************uart configuration *********************
+    // UART Configuration
     XUartPs uart;
-    XUartPs_Config *config;    
-    
-    int uart_index = 0;
+    XUartPs_Config *config;  
 
     // Initialize UART
     config = XUartPs_LookupConfig(UART_DEVICE_ID);
     if (config == NULL) {
-        //xil_printf("UART config lookup failed.\r\n");
-        return -1;
+        xil_printf("UART config lookup failed.\r\n");
+        return -1;       
     }
-
     if (XUartPs_CfgInitialize(&uart, config, config->BaseAddress) != XST_SUCCESS) {
-        //xil_printf("UART initialization failed.\r\n");
+        xil_printf("UART initialization failed.\r\n");
+        return -1;    
+    }
+    XUartPs_SetBaudRate(&uart, 115200);    
+
+    // I2C Configuration
+    XIicPs Iic;
+    XIicPs_Config *config_i2c;    
+
+    // Initialize I2C
+    config_i2c = XIicPs_LookupConfig(I2C_DEVICE_ID);
+    if (config_i2c == NULL) {
+        xil_printf("I2C config lookup failed.\r\n");
         return -1;
     }
+    if (XIicPs_CfgInitialize(&Iic, config_i2c, config_i2c->BaseAddress) != XST_SUCCESS) {
+        xil_printf("I2C initialization failed.\r\n");
+        return -1;
+    }    
+    XIicPs_SetSClk(&Iic, 100000);
 
-    XUartPs_SetBaudRate(&uart, 115200);
+    int uart_index = 0;
 
     // Writes to INTR_PLTFRM IP
     slv_wrt(1, 0x5555FF13);   // AD7328 Configuration Data 
@@ -87,98 +97,41 @@ int main()
     slv_wrt(0, 0x14004040);
     delay(100000);
 
-    // Writes to RTCC IP
-   // rtcc_wrt(1,0x01030600);  
-   // rtcc_wrt(2,0x00260209);  
-   // rtcc_wrt(0,0x00000001);  // allowing data to be written by selecting the state WRTC
-    //sleep(1);    
-    //rtcc_wrt(0,0x00000000);
-
     while(1)
     {
-        
-         
         u8 ch;
-        // Try to receive one character
         if (XUartPs_Recv(&uart, &ch, 1) == 1) {
-            // Store character
-           
             recv_buffer[uart_index++] = ch;  
-           /*
-            if(uart_index==10) {
-
-                Slave_Addr = (recv_buffer[0]*10)+ recv_buffer[1];
-                
-                if(Slave_Addr==540){                    //ASCII 12 = 540 Decimal
-                    Din_Read();
-                }
-                else if(Slave_Addr==530){
-                                                   
-                    ADC_Read();                     
-                }
-                else if(Slave_Addr==544){
-                    RTCC();
-                }
-                else if(Slave_Addr==548){
-                    RTCC_Write();
-                }                    
-                else {
-                    UART_WRITE();                         
-                }
-               
-                //XUartPs_Send(&uart, recv_buffer, uart_index);           
-                uart_index = 0; // Reset buffer
-                // memset(recv_buffer, 0, sizeof(recv_buffer));
-            } */
-
-
 
             if(uart_index >=2 && uart_index<=18) {
-                // Echo the full line
-                
-                Slave_Addr = (recv_buffer[0]*10)+ recv_buffer[1];
-               // xil_printf("-----%d---\n",Slave_Addr);                
-                if(Slave_Addr==540 & uart_index==10 ){                    //540==12 reg
+                Slave_Addr = (recv_buffer[0]*10)+ recv_buffer[1];   
+
+                if(Slave_Addr==540 & uart_index==10 ){                    // Decimal 540 -- ASCII 12
                     Din_Read();
-                     uart_index = 0;
-                     memset(recv_buffer, 0, sizeof(recv_buffer));
-                 }
-
-
-                else if(Slave_Addr==530 & uart_index==10){
-                                                   
-                    ADC_Read(); 
-                     uart_index = 0;    
-                    memset(recv_buffer, 0, sizeof(recv_buffer));                                     
-                 }
-                // else if(Slave_Addr==534){
-                                                   
-                //     DAC_Write();                     
-                //  }
-                else if(Slave_Addr== 544 & uart_index==10){
-                    RTCC();
-                        uart_index = 0;   
-                     
-                        memset(recv_buffer, 0, sizeof(recv_buffer));                 
-                 }
-                else if(Slave_Addr==548  && uart_index==18){
-                    RTCC_Write();
-                    uart_index = 0; 
-                                           
+                    uart_index = 0;
                     memset(recv_buffer, 0, sizeof(recv_buffer));
-                                                                  
-                 }
-                else if(Slave_Addr != 548  && uart_index==10) {
+                }
+
+                else if(Slave_Addr==530 & uart_index==10){                // Decimal 530 -- ASCII 02                
+                    ADC_Read(); 
+                    uart_index = 0;    
+                    memset(recv_buffer, 0, sizeof(recv_buffer));                                     
+                }
+                else if(Slave_Addr== 544 & uart_index==10){               // Decimal 544 -- ASCII 16
+                    RTCC();
+                    uart_index = 0;   
+                    memset(recv_buffer, 0, sizeof(recv_buffer));                 
+                }
+                else if(Slave_Addr==548  && uart_index==18){              // Decimal 548 -- ASCII 20
+                    RTCC_Write();
+                    uart_index = 0;                        
+                    memset(recv_buffer, 0, sizeof(recv_buffer));                                                  
+                }
+                else if(Slave_Addr != 548  && uart_index==10) {           // Decimal 548 -- ASCII 20
                     UART_WRITE();    
-                     uart_index = 0;  
-                    
-                     
-                     memset(recv_buffer, 0, sizeof(recv_buffer));                   
-                 }
-               
-                //XUartPs_Send(&uart, recv_buffer, index_1);           
-               // index_1 = 0; // Reset buffer
-            //  memset(recv_buffer, 0, sizeof(recv_buffer));
+                    uart_index = 0;                       
+                    memset(recv_buffer, 0, sizeof(recv_buffer));                   
+                }
             }             
 
             // Prevent buffer overflow
@@ -186,26 +139,22 @@ int main()
                 uart_index = 0;
                 xil_printf("\r\nBuffer overflow. Resetting.\r\n");
             }
-        }  
+        }
 
 
 
-
-        rtc_val = rtcc_read(3);
-        // val_1 = rtc_val/1000000;
-        //xil_printf("val_1 = %x\n",val_1);        
-        //xil_printf("RTCC VALUE : 0x%08x\r", rtc_val);
         //reading seconds
-        sec_l_val =  hex2ascii(rtc_val);               // Lower Nibble
+        rtc_val   = rtcc_read(3);
+        sec_l_val =  hex2ascii(rtc_val);                      // Lower Nibble
         sec_u_val =  hex2ascii((rtc_val>>4) & 0x07);   // Upper Nibble with mask Oscillator Bit
         
         //reading minutes
-         min_l_val =  hex2ascii(rtc_val>>8);
-         min_u_val =  hex2ascii(rtc_val>>12);
+        min_l_val =  hex2ascii(rtc_val>>8);
+        min_u_val =  hex2ascii(rtc_val>>12);
 
         //reading hours
-         hr_l_val =  hex2ascii(rtc_val>>16);
-         hr_u_val =  hex2ascii(rtc_val>>20);
+        hr_l_val =  hex2ascii(rtc_val>>16);
+        hr_u_val =  hex2ascii(rtc_val>>20);
          
         //reading weekdays
         w_l_val =  hex2ascii(rtc_val>>24) ;              
@@ -224,13 +173,20 @@ int main()
         m_u_val =  hex2ascii(rtc_val>>12);                
         //reading year
         y_l_val =  hex2ascii(rtc_val>>16);
-        y_u_val =  hex2ascii(rtc_val>>20);        
+        y_u_val =  hex2ascii(rtc_val>>20);    
 
+        // Local Temp High Byte
+        WriteBuffer[0] = 0x00;
+        XIicPs_MasterSendPolled(&Iic, WriteBuffer, 1, TMP451_ADDR);
+        XIicPs_MasterRecvPolled(&Iic, ReadBuffer, 1, TMP451_ADDR);
+        local_high = ReadBuffer[0];
 
-        // xil_printf("%c%c:%c%c:%c%c %s %c%c/%c%c/20%c%c", hr_u_val,hr_l_val,min_u_val,min_l_val,sec_u_val,sec_l_val,week,d_u_val,d_l_val, m_u_val,m_l_val,y_u_val,y_l_val);
-        //  delay(1000);  
-          
-
+        // Local Temp Low Byte
+        WriteBuffer[0] = 0x15;
+        XIicPs_MasterSendPolled(&Iic, WriteBuffer, 1, TMP451_ADDR);
+        XIicPs_MasterRecvPolled(&Iic, ReadBuffer, 1, TMP451_ADDR);
+        local_low = ReadBuffer[0] >> 4;   
+                    
     }
     
     cleanup_platform();
@@ -284,7 +240,7 @@ void UART_WRITE(){
      
     u32  Slave_value = (u32)strtoul((char *)&recv_buffer[2], NULL, 16);
     slv_wrt(Slave_Addr,Slave_value);
-    xil_printf("%c%c:%c%c:%c%c %s %c%c/%c%c/20%c%c\r\n", hr_u_val,hr_l_val,min_u_val,min_l_val,sec_u_val,sec_l_val,week,d_u_val,d_l_val, m_u_val,m_l_val,y_u_val,y_l_val);    
+    xil_printf("%c%c:%c%c:%c%c %s %c%c/%c%c/20%c%cBoard Temperature : %d.%04d \xB0""C\r\n", hr_u_val,hr_l_val,min_u_val,min_l_val,sec_u_val,sec_l_val,week,d_u_val,d_l_val, m_u_val,m_l_val,y_u_val,y_l_val,local_high, local_low * 625);    
 
 }
 
@@ -390,7 +346,7 @@ void ADC_Read(){
                 adc5_avg6 = (uint16_t)(sum8 / ADC_BUFFER);
     
             
-               xil_printf("%u:%u:%u:%u:%u:%u:%u:%u$%c%c:%c%c:%c%c %s %c%c/%c%c/20%c%c\r\n",adc3_avg0, adc3_avg2, adc3_avg4, adc3_avg6, adc5_avg0, adc5_avg2, adc5_avg4, adc5_avg6,hr_u_val,hr_l_val,min_u_val,min_l_val,sec_u_val,sec_l_val,week,d_u_val,d_l_val, m_u_val,m_l_val,y_u_val,y_l_val);
+               xil_printf("%u:%u:%u:%u:%u:%u:%u:%u$%c%c:%c%c:%c%c %s %c%c/%c%c/20%c%cBoard Temperature : %d.%04d \xB0""C\r\n",adc3_avg0, adc3_avg2, adc3_avg4, adc3_avg6, adc5_avg0, adc5_avg2, adc5_avg4, adc5_avg6,hr_u_val,hr_l_val,min_u_val,min_l_val,sec_u_val,sec_l_val,week,d_u_val,d_l_val, m_u_val,m_l_val,y_u_val,y_l_val,local_high, local_low * 625);
             
                delay(1000);
                
@@ -405,32 +361,34 @@ void ADC_Read(){
 
 // Digital IN Read Function
 void Din_Read(){
-    
+    u16 digi_in;
     digi_in = slv_read(12) & 0xffff;//12 reister
-    xil_printf("%x$%c%c:%c%c:%c%c %s %c%c/%c%c/20%c%c\r\n",digi_in,hr_u_val,hr_l_val,min_u_val,min_l_val,sec_u_val,sec_l_val,week,d_u_val,d_l_val, m_u_val,m_l_val,y_u_val,y_l_val);
-   
+    xil_printf("%x$%c%c:%c%c:%c%c %s %c%c/%c%c/20%c%cBoard Temperature : %d.%04d \xB0""C\r\n",digi_in,hr_u_val,hr_l_val,min_u_val,min_l_val,sec_u_val,sec_l_val,week,d_u_val,d_l_val, m_u_val,m_l_val,y_u_val,y_l_val,local_high, local_low * 625);
 }
   
-// 
+// RTCC
 void RTCC(){
-    xil_printf("%c%c:%c%c:%c%c %s %c%c/%c%c/20%c%c\r", hr_u_val,hr_l_val,min_u_val,min_l_val,sec_u_val,sec_l_val,week,d_u_val,d_l_val, m_u_val,m_l_val,y_u_val,y_l_val);    
+    xil_printf("%c%c:%c%c:%c%c %s %c%c/%c%c/20%c%cBoard Temperature : %d.%04d \xB0""C\r", hr_u_val,hr_l_val,min_u_val,min_l_val,sec_u_val,sec_l_val,week,d_u_val,d_l_val, m_u_val,m_l_val,y_u_val,y_l_val,local_high, local_low * 625);    
 }
 
+
+// RTCC_Write is a Function defined for Writing to RTCC Time Keeping Registers
 void RTCC_Write(){
 
-    uint32_t rtc_value_1 = 0,rtc_value_2 = 0;      
-      
+    uint32_t rtc_value_1 = 0,rtc_value_2 = 0;     
+
     for (int i = 2; i < 10; i++) {
         rtc_value_1 = (rtc_value_1 << 4) | (recv_buffer[i] - '0');
     }                
+    
     rtcc_wrt(1,rtc_value_1);  
+    
     for (int i = 10; i < 18; i++) {
         rtc_value_2 = (rtc_value_2 << 4) | (recv_buffer[i] - '0');
-    }                
-    rtcc_wrt(2,rtc_value_2); 
-   // rtcc_wrt(2,0x00260209);                
+    }
+    
+    rtcc_wrt(2,rtc_value_2);                 
     rtcc_wrt(0,0x00000001);                
     sleep(1); 
-    rtcc_wrt(0,0x00000000);
-                                           
+    rtcc_wrt(0,0x00000000);                                         
 }

@@ -211,3 +211,9 @@ set_property PACKAGE_PIN E1 [get_ports UART_0_0_rxd]
 set_property PACKAGE_PIN G1 [get_ports UART_0_0_txd]
 set_property IOSTANDARD LVCMOS18 [get_ports UART_0_0_rxd]
 set_property IOSTANDARD LVCMOS18 [get_ports UART_0_0_txd]
+
+set_property PACKAGE_PIN AA22 [get_ports IIC_0_0_scl_io]
+set_property PACKAGE_PIN AC22 [get_ports IIC_0_0_sda_io]
+set_property IOSTANDARD LVCMOS33 [get_ports IIC_0_0_scl_io]
+set_property IOSTANDARD LVCMOS33 [get_ports IIC_0_0_sda_io]
+

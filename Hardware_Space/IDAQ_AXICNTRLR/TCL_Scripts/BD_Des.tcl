@@ -234,6 +234,8 @@ proc create_root_design { parentCell } {
 
   set UART_0_0 [ create_bd_intf_port -mode Master -vlnv xilinx.com:interface:uart_rtl:1.0 UART_0_0 ]
 
+  set IIC_0_0 [ create_bd_intf_port -mode Master -vlnv xilinx.com:interface:iic_rtl:1.0 IIC_0_0 ]
+
 
   # Create ports
   set ad3542_cs_0 [ create_bd_port -dir O -from 3 -to 0 ad3542_cs_0 ]
@@ -286,10 +288,15 @@ proc create_root_design { parentCell } {
     CONFIG.PCW_CLK2_FREQ {10000000} \
     CONFIG.PCW_CLK3_FREQ {10000000} \
     CONFIG.PCW_DDR_RAM_HIGHADDR {0x3FFFFFFF} \
+    CONFIG.PCW_EN_EMIO_I2C0 {1} \
     CONFIG.PCW_EN_EMIO_UART0 {1} \
+    CONFIG.PCW_EN_I2C0 {1} \
     CONFIG.PCW_EN_UART0 {1} \
     CONFIG.PCW_FPGA0_PERIPHERAL_FREQMHZ {125} \
     CONFIG.PCW_FPGA_FCLK0_ENABLE {1} \
+    CONFIG.PCW_I2C0_I2C0_IO {EMIO} \
+    CONFIG.PCW_I2C0_PERIPHERAL_ENABLE {1} \
+    CONFIG.PCW_I2C_PERIPHERAL_FREQMHZ {111.111115} \
     CONFIG.PCW_UART0_GRP_FULL_ENABLE {0} \
     CONFIG.PCW_UART0_PERIPHERAL_ENABLE {1} \
     CONFIG.PCW_UART0_UART0_IO {EMIO} \
@@ -328,6 +335,7 @@ proc create_root_design { parentCell } {
   connect_bd_intf_net -intf_net axi_interconnect_0_M01_AXI [get_bd_intf_pins axi_interconnect_0/M01_AXI] [get_bd_intf_pins RTCC_0/S00_AXI]
   connect_bd_intf_net -intf_net processing_system7_0_DDR [get_bd_intf_ports DDR] [get_bd_intf_pins processing_system7_0/DDR]
   connect_bd_intf_net -intf_net processing_system7_0_FIXED_IO [get_bd_intf_ports FIXED_IO] [get_bd_intf_pins processing_system7_0/FIXED_IO]
+  connect_bd_intf_net -intf_net processing_system7_0_IIC_0 [get_bd_intf_ports IIC_0_0] [get_bd_intf_pins processing_system7_0/IIC_0]
   connect_bd_intf_net -intf_net processing_system7_0_M_AXI_GP0 [get_bd_intf_pins processing_system7_0/M_AXI_GP0] [get_bd_intf_pins axi_interconnect_0/S00_AXI]
   connect_bd_intf_net -intf_net processing_system7_0_UART_0 [get_bd_intf_ports UART_0_0] [get_bd_intf_pins processing_system7_0/UART_0]
 

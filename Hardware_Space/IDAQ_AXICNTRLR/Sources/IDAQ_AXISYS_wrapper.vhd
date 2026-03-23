@@ -1,8 +1,8 @@
 --Copyright 1986-2022 Xilinx, Inc. All Rights Reserved.
---Copyright 2022-2023 Advanced Micro Devices, Inc. All Rights Reserved.
+--Copyright 2022-2024 Advanced Micro Devices, Inc. All Rights Reserved.
 ----------------------------------------------------------------------------------
---Tool Version: Vivado v.2023.2 (win64) Build 4029153 Fri Oct 13 20:14:34 MDT 2023
---Date        : Tue Mar  3 18:46:09 2026
+--Tool Version: Vivado v.2024.2 (win64) Build 5239630 Fri Nov 08 22:35:27 MST 2024
+--Date        : Sat Mar 21 17:10:24 2026
 --Host        : DSPL-LAB-2-TEF running 64-bit major release  (build 9200)
 --Command     : generate_target IDAQ_AXISYS_wrapper.bd
 --Design      : IDAQ_AXISYS_wrapper
@@ -35,6 +35,8 @@ entity IDAQ_AXISYS_wrapper is
     FIXED_IO_ps_clk : inout STD_LOGIC;
     FIXED_IO_ps_porb : inout STD_LOGIC;
     FIXED_IO_ps_srstb : inout STD_LOGIC;
+    IIC_0_0_scl_io : inout STD_LOGIC;
+    IIC_0_0_sda_io : inout STD_LOGIC;
     UART_0_0_rxd : in STD_LOGIC;
     UART_0_0_txd : out STD_LOGIC;
     ad3542_cs_0 : out STD_LOGIC_VECTOR ( 3 downto 0 );
@@ -77,6 +79,8 @@ architecture STRUCTURE of IDAQ_AXISYS_wrapper is
     miso_0 : in STD_LOGIC;
     mosi_0 : out STD_LOGIC;
     sclk_0 : out STD_LOGIC;
+    led_out_0 : out STD_LOGIC_VECTOR ( 7 downto 0 );
+    sw_in_0 : in STD_LOGIC;
     DDR_cas_n : inout STD_LOGIC;
     DDR_cke : inout STD_LOGIC;
     DDR_ck_n : inout STD_LOGIC;
@@ -98,12 +102,30 @@ architecture STRUCTURE of IDAQ_AXISYS_wrapper is
     FIXED_IO_ps_srstb : inout STD_LOGIC;
     FIXED_IO_ps_clk : inout STD_LOGIC;
     FIXED_IO_ps_porb : inout STD_LOGIC;
+    IIC_0_0_sda_i : in STD_LOGIC;
+    IIC_0_0_sda_o : out STD_LOGIC;
+    IIC_0_0_sda_t : out STD_LOGIC;
+    IIC_0_0_scl_i : in STD_LOGIC;
+    IIC_0_0_scl_o : out STD_LOGIC;
+    IIC_0_0_scl_t : out STD_LOGIC;
     UART_0_0_txd : out STD_LOGIC;
-    UART_0_0_rxd : in STD_LOGIC;
-    led_out_0 : out STD_LOGIC_VECTOR ( 7 downto 0 );
-    sw_in_0 : in STD_LOGIC
+    UART_0_0_rxd : in STD_LOGIC
   );
   end component IDAQ_AXISYS;
+  component IOBUF is
+  port (
+    I : in STD_LOGIC;
+    O : out STD_LOGIC;
+    T : in STD_LOGIC;
+    IO : inout STD_LOGIC
+  );
+  end component IOBUF;
+  signal IIC_0_0_scl_i : STD_LOGIC;
+  signal IIC_0_0_scl_o : STD_LOGIC;
+  signal IIC_0_0_scl_t : STD_LOGIC;
+  signal IIC_0_0_sda_i : STD_LOGIC;
+  signal IIC_0_0_sda_o : STD_LOGIC;
+  signal IIC_0_0_sda_t : STD_LOGIC;
 begin
 IDAQ_AXISYS_i: component IDAQ_AXISYS
      port map (
@@ -128,6 +150,12 @@ IDAQ_AXISYS_i: component IDAQ_AXISYS
       FIXED_IO_ps_clk => FIXED_IO_ps_clk,
       FIXED_IO_ps_porb => FIXED_IO_ps_porb,
       FIXED_IO_ps_srstb => FIXED_IO_ps_srstb,
+      IIC_0_0_scl_i => IIC_0_0_scl_i,
+      IIC_0_0_scl_o => IIC_0_0_scl_o,
+      IIC_0_0_scl_t => IIC_0_0_scl_t,
+      IIC_0_0_sda_i => IIC_0_0_sda_i,
+      IIC_0_0_sda_o => IIC_0_0_sda_o,
+      IIC_0_0_sda_t => IIC_0_0_sda_t,
       UART_0_0_rxd => UART_0_0_rxd,
       UART_0_0_txd => UART_0_0_txd,
       ad3542_cs_0(3 downto 0) => ad3542_cs_0(3 downto 0),
@@ -148,5 +176,19 @@ IDAQ_AXISYS_i: component IDAQ_AXISYS
       mosi_0 => mosi_0,
       sclk_0 => sclk_0,
       sw_in_0 => sw_in_0
+    );
+IIC_0_0_scl_iobuf: component IOBUF
+     port map (
+      I => IIC_0_0_scl_o,
+      IO => IIC_0_0_scl_io,
+      O => IIC_0_0_scl_i,
+      T => IIC_0_0_scl_t
+    );
+IIC_0_0_sda_iobuf: component IOBUF
+     port map (
+      I => IIC_0_0_sda_o,
+      IO => IIC_0_0_sda_io,
+      O => IIC_0_0_sda_i,
+      T => IIC_0_0_sda_t
     );
 end STRUCTURE;

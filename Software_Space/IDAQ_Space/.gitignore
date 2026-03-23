@@ -14,12 +14,19 @@ IDAQ_Pltfrm/vitis-comp.json
 IDAQ_Pltfrm/.analytics/
 IDAQ_Pltfrm/*.log
 
-# ---- Hello_World build outputs ----
+# ---- IDAQ_DRVR build outputs ----
 IDAQ_DRVR/build/
 IDAQ_DRVR/_ide/
 IDAQ_DRVR/compile_commands.json
 IDAQ_DRVR/vitis-comp.json
 IDAQ_DRVR/src/.cache/
+
+# ---- Hello_World build outputs ----
+Hello_World/build/
+Hello_World/_ide/
+Hello_World/compile_commands.json
+Hello_World/vitis-comp.json
+Hello_World/src/.cache/
 
 
 # ---- IDE compile index (machine specific) ----
